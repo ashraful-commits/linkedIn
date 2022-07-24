@@ -21,6 +21,8 @@ const updateLsData = (key, array) => {
   localStorage.setItem(key, JSON.stringify(array));
 };
 
+// timeCounter
+
 const timeCounter = (postTime) => {
   let currentTime = Date.now();
 
