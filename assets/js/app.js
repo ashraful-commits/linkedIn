@@ -1,21 +1,20 @@
-const linkedIn_form = document.getElementById('linkedIn_form');
-const msg = document.querySelector('.msg');
-const output = document.getElementById('output');
-const linkedIn_form_edit = document.getElementById('linkedIn_form_edit');
+const linkedIn_form = document.getElementById("linkedIn_form");
+const msg = document.querySelector(".msg");
+const output = document.getElementById("output");
+const linkedIn_form_edit = document.getElementById("linkedIn_form_edit");
 
-
-const getAlldat = () =>{
-    const getlsdata= getItemLs('linkedIn');
-    let list ="";
-    if(!getlsdata || getlsdata == ''){
-        list =`
+const getAlldat = () => {
+  const getlsdata = getItemLs("linkedIn");
+  let list = "";
+  if (!getlsdata || getlsdata == "") {
+    list = `
         <li class ="text-center bg-white p-3 rounded rounded-5 border border-secondary"><td  colspan ="3"> <h5>No post found</h5></td></li>
-        `
-    }
-    
-    if(getlsdata){
-        getlsdata.map((item,index)=>{
-            list += `
+        `;
+  }
+
+  if (getlsdata) {
+    getlsdata.map((item, index) => {
+      list += `
             <li class ="w-100 bg-white rounded rounded-5 my-2 border border-secondary">
             <div class="d-flex justify-content-between align-items-center px-2 py-2">
             <div class="d-flex">
@@ -23,8 +22,9 @@ const getAlldat = () =>{
              <div class="d-flex flex-column ms-2">
              <span class="d-inline-block p-0 m-0 h6">User name</span>
              <span class="d-inline-block p-0 m-0 text-black-50" >follower</span>
-             <span class="d-inline-block p-0 m-0 text-black-50">${timeCounter(item.post_time)
-             }</span>
+             <span class="d-inline-block p-0 m-0 text-black-50">${timeCounter(
+               item.post_time
+             )}</span>
              </div>
             </div>
             
@@ -76,84 +76,76 @@ const getAlldat = () =>{
             </div>
             </li>
             
-            `
-        })
-    } 
-   output.innerHTML =list;
-}
+            `;
+    });
+  }
+  output.innerHTML = list;
+};
 getAlldat();
 
+// get value from form and set value in ls
 
+linkedIn_form.addEventListener("submit", (e) => {
+  e.preventDefault();
 
+  let postTime = {
+    post_time: Date.now(),
+  };
 
-// get value from form and set value in ls 
+  let form_data = new FormData(e.target);
+  let object_data = Object.fromEntries(form_data.entries());
 
-linkedIn_form.addEventListener('submit',(e)=>{
-    e.preventDefault();
+  let final_object = { ...object_data, ...postTime };
 
-    let postTime = {
-      'post_time': Date.now()  
-    } 
+  let { text, image } = object_data;
+  if (!text || !image) {
+    msg.innerHTML = setAlert("All fields are required");
+  } else {
+    setDataLS("linkedIn", final_object);
+    e.target.reset();
+    getAlldat();
+  }
+});
 
-    let form_data = new FormData(e.target);
-    let object_data = Object.fromEntries(form_data.entries());
+output.addEventListener("click", (e) => {
+  e.preventDefault();
 
-    let final_object = { ...object_data, ...postTime };
+  if (e.target.classList.contains("edit")) {
+    let edit_index = e.target.getAttribute("index");
+    let edit_data = getItemLs("linkedIn");
+    let textArea = document.getElementById("textarea");
+    let input_field = document.getElementById("input");
 
-    let { text, image } = object_data;
-    if(!text || !image){
-        msg.innerHTML = setAlert('All fields are required')
-    }else{
-        setDataLS('linkedIn',final_object)
-        e.target.reset();
+    let data = edit_data[edit_index];
+    textArea.value = data.text;
+    input_field.value = data.image;
+    linkedIn_form_edit.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      let form_data = new FormData(e.target);
+      let object_data = Object.fromEntries(form_data.entries());
+
+      let { text, image } = object_data;
+      if (!text || !image) {
+        msg.innerHTML = setAlert("All fields are required");
+      } else {
+        edit_data[edit_index] = {
+          text,
+          image,
+          post_time: Date.now(),
+        };
+
+        updateLsData("linkedIn", edit_data);
         getAlldat();
-    }
-})
+      }
+    });
+  }
 
-output.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    if (e.target.classList.contains('edit')) {
-        let edit_index = e.target.getAttribute('index');
-        let edit_data = getItemLs('linkedIn');
-        let textArea = document.getElementById('textarea');
-        let input_field = document.getElementById('input');
-
-        let data = edit_data[edit_index];
-        textArea.value = data.text;
-        input_field.value = data.image;
-        linkedIn_form_edit.addEventListener('submit',(e)=>{
-            e.preventDefault();
-        
-            let form_data = new FormData(e.target);
-            let object_data = Object.fromEntries(form_data.entries());
-          
-              
-            
-            let { text, image } = object_data;
-            if(!text || !image){
-                msg.innerHTML = setAlert('All fields are required')
-            } else {
-            
-                edit_data[edit_index] = {
-                    text, image,
-                    post_time: Date.now()
-
-                }
-               
-                updateLsData('linkedIn', edit_data);
-                getAlldat();
-            }
-        })
-    }
-
-    if (e.target.classList.contains('delete')) {
-        let delete_index = e.target.getAttribute('delete');
-        let delet_data = getItemLs('linkedIn');
-        delet_data.splice(delete_index, 1)
-        updateLsData('linkedIn', delet_data);
-        getAlldat()
-    }
-})
-
-
+  if (e.target.classList.contains("delete")) {
+    let delete_index = e.target.getAttribute("delete");
+    let delet_data = getItemLs("linkedIn");
+    delet_data.splice(delete_index, 1);
+    updateLsData("linkedIn", delet_data);
+    getAlldat();
+  }
+});
