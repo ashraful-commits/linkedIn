@@ -23,7 +23,8 @@ const getAlldat = () =>{
              <div class="d-flex flex-column ms-2">
              <span class="d-inline-block p-0 m-0 h6">User name</span>
              <span class="d-inline-block p-0 m-0 text-black-50" >follower</span>
-             <span class="d-inline-block p-0 m-0 text-black-50">2h</span>
+             <span class="d-inline-block p-0 m-0 text-black-50">${timeCounter(item.post_time)
+             }</span>
              </div>
             </div>
             
@@ -90,14 +91,20 @@ getAlldat();
 linkedIn_form.addEventListener('submit',(e)=>{
     e.preventDefault();
 
+    let postTime = {
+      'post_time': Date.now()  
+    } 
+
     let form_data = new FormData(e.target);
     let object_data = Object.fromEntries(form_data.entries());
+
+    let final_object = { ...object_data, ...postTime };
 
     let { text, image } = object_data;
     if(!text || !image){
         msg.innerHTML = setAlert('All fields are required')
     }else{
-        setDataLS('linkedIn',object_data)
+        setDataLS('linkedIn',final_object)
         e.target.reset();
         getAlldat();
     }
@@ -117,21 +124,24 @@ output.addEventListener('click', (e) => {
         input_field.value = data.image;
         linkedIn_form_edit.addEventListener('submit',(e)=>{
             e.preventDefault();
-          
+        
             let form_data = new FormData(e.target);
             let object_data = Object.fromEntries(form_data.entries());
-        
+          
+              
+            
             let { text, image } = object_data;
             if(!text || !image){
                 msg.innerHTML = setAlert('All fields are required')
             } else {
-                console.log(edit_index)
-                console.log(edit_data)
+            
                 edit_data[edit_index] = {
-                    text,image
+                    text, image,
+                    post_time: Date.now()
+
                 }
-        
-                updateLsData('linkedIn',edit_data)
+               
+                updateLsData('linkedIn', edit_data);
                 getAlldat();
             }
         })
