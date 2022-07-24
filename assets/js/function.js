@@ -34,10 +34,10 @@ const timeCounter = (postTime) => {
   if (TotalSecond <= 60) {
     return `${TotalSecond} sec ago`;
   } else if (TotalSecond >= 60) {
-    return `${Total_min / 60} min ago`;
+    return `${Total_min} min ago`;
   } else if (Total_min >= 60) {
-    return `${TotalHour / 60} hour ago`;
+    return `${TotalHour} hour ago`;
   } else if (TotalHour >= 24) {
-    return `${totalDay / 24} day ago`;
+    return `${totalDay} day ago`;
   }
 };
