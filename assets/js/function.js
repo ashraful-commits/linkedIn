@@ -25,24 +25,23 @@ const updateLsData = (key, array) => {
 
 const timeCounter = (postTime) => {
   let currentTime = Date.now();
-
   let timeDiff = currentTime - postTime;
 
-  let TotalSecond = Math.floor(timeDiff / 1000);
-  let Total_min = Math.floor(TotalSecond / 60);
-  let TotalHour = Math.floor(Total_min / 60);
-  let totalDay = Math.floor(TotalHour / 24);
+  let totalSecond = Math.floor(timeDiff / 1000);
+  let totalMin = Math.floor(totalSecond / 60);
+  let totalHour = Math.floor(totalMin / 60);
+  let totalDay = Math.floor(totalHour / 24);
 
-  if (TotalSecond <= 60) {
-    return `${TotalSecond} sec ago`;
+  if (totalSecond <= 59) {
+    return `${totalSecond} sec ago`;
   }
-  if (TotalSecond >= 60) {
-    return `${Total_min} min ago`;
+  if (totalSecond <= 60 || totalSecond <= 3599) {
+    return `${totalMin} min ago`;
   }
-  if (Total_min >= 60) {
-    return `${TotalHour} hour ago`;
+  if (totalSecond >= 3600 || totalSecond <= 86399) {
+    return `${totalHour} hour ago`;
   }
-  if (TotalHour >= 24) {
+  if (totalSecond >= 86400) {
     return `${totalDay} day ago`;
   }
 };
