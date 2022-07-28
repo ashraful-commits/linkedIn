@@ -13,7 +13,7 @@ const getAlldat = () => {
   }
 
   if (getlsdata) {
-    getlsdata.map((item, index) => {
+    getlsdata.reverse().map((item, index) => {
       list += `
             <li class ="w-100 bg-white rounded rounded-5 my-2 border border-secondary">
             <div class="d-flex justify-content-between align-items-center px-2 py-2">
@@ -36,8 +36,12 @@ const getAlldat = () => {
                       </svg>
                         </button>
                 <div class="dropdown-menu target_menu w-100" aria-labelledby="triggerId">
-                    <a data-bs-target="#edit_modal" data-bs-toggle="modal" index="${index}" class="dropdown-item edit w-100"   href="#">Edit</a>
-                    <a index="${index}" class="dropdown-item delete w-50" href="#">Delete</a>
+                    <a data-bs-target="#edit_modal" data-bs-toggle="modal" index="${
+                      item.post_time
+                    }" class="dropdown-item edit w-100"   href="#">Edit</a>
+                    <a index="${
+                      item.post_time
+                    }" class="dropdown-item delete w-50" href="#">Delete</a>
                 </div>
                 </div>
             </div>
@@ -112,40 +116,57 @@ output.addEventListener("click", (e) => {
 
   if (e.target.classList.contains("edit")) {
     let edit_index = e.target.getAttribute("index");
-    let edit_data = getItemLs("linkedIn");
+    let lsDataEdit = getItemLs("linkedIn");
     let textArea = document.getElementById("textarea");
     let input_field = document.getElementById("input");
 
-    let data = edit_data[edit_index];
-    textArea.value = data.text;
-    input_field.value = data.image;
+    lsDataEdit.find((items) => {
+      if (items.post_time == edit_index) {
+        textArea.value = items.text;
+        input_field.value = items.image;
+      }
+    });
+
     linkedIn_form_edit.addEventListener("submit", (e) => {
       e.preventDefault();
 
       let form_data = new FormData(e.target);
       let object_data = Object.fromEntries(form_data.entries());
+      let postTime = {
+        post_time: Date.now(),
+      };
 
       let { text, image } = object_data;
-      if (!text || !image) {
-        msg.innerHTML = setAlert("All fields are required");
-      } else {
-        edit_data[edit_index] = {
-          text,
-          image,
-          post_time: Date.now(),
-        };
 
-        updateLsData("linkedIn", edit_data);
-        getAlldat();
-      }
+      let editData = {
+        ...object_data,
+        ...postTime,
+      };
+
+      lsDataEdit.push(editData);
+
+      const finalData = lsDataEdit.filter((data) => {
+        if (data.post_time != edit_index) {
+          return data;
+        }
+      });
+
+      updateLsData("linkedIn", finalData);
+      getAlldat();
     });
   }
 
   if (e.target.classList.contains("delete")) {
-    let delete_index = e.target.getAttribute("delete");
+    let delete_index = e.target.getAttribute("index");
     let delet_data = getItemLs("linkedIn");
-    delet_data.splice(delete_index, 1);
-    updateLsData("linkedIn", delet_data);
-    getAlldat();
+    let afterDeleteData;
+    confirm(`do you want to delete ?`);
+    if (confirm == true) {
+      afterDeleteData = delet_data.filter(
+        (data) => data.post_time != delete_index
+      );
+      updateLsData("linkedIn", afterDeleteData);
+      getAlldat();
+    }
   }
 });
