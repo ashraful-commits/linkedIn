@@ -2,7 +2,7 @@ const linkedIn_form = document.getElementById("linkedIn_form");
 const msg = document.querySelector(".msg");
 const output = document.getElementById("output");
 const linkedIn_form_edit = document.getElementById("linkedIn_form_edit");
-
+const modelId = document.getElementById("modelId");
 const getAlldat = () => {
   const getlsdata = getItemLs("linkedIn");
   let list = "";
@@ -41,7 +41,7 @@ const getAlldat = () => {
                     }" class="dropdown-item edit w-100"   href="#">Edit</a>
                     <a index="${
                       item.post_time
-                    }" class="dropdown-item delete w-50" href="#">Delete</a>
+                    }" class="dropdown-item delete w-50" href="#" data-bs-target ="#modelId" data-bs-toggle ="modal">Delete</a>
                 </div>
                 </div>
             </div>
@@ -160,16 +160,18 @@ output.addEventListener("click", (e) => {
   if (e.target.classList.contains("delete")) {
     let delete_index = e.target.getAttribute("index");
     let delete_data = getItemLs("linkedIn");
-
-    let con = confirm(`do you want to delete ?`);
-    if (con == true) {
-      let afterDeleteData = delete_data.filter((data) => {
-        if (data.post_time != delete_index) {
-          return data;
-        }
-      });
-      updateLsData("linkedIn", afterDeleteData);
-      getAlldat();
-    }
+    modelId.onclick = (e) => {
+      if (e.target.classList.contains("yes")) {
+        let afterDeleteData = delete_data.filter((data) => {
+          if (data.post_time != delete_index) {
+            return data;
+          }
+        });
+        updateLsData("linkedIn", afterDeleteData);
+        getAlldat();
+      } else {
+        return false;
+      }
+    };
   }
 });
