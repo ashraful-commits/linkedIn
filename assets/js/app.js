@@ -144,6 +144,7 @@ output.addEventListener("click", (e) => {
       };
 
       lsDataEdit.push(editData);
+      console.log(edit_index);
 
       const finalData = lsDataEdit.filter((data) => {
         if (data.post_time != edit_index) {
@@ -158,13 +159,15 @@ output.addEventListener("click", (e) => {
 
   if (e.target.classList.contains("delete")) {
     let delete_index = e.target.getAttribute("index");
-    let delet_data = getItemLs("linkedIn");
-    let afterDeleteData;
-    confirm(`do you want to delete ?`);
-    if (confirm == true) {
-      afterDeleteData = delet_data.filter(
-        (data) => data.post_time != delete_index
-      );
+    let delete_data = getItemLs("linkedIn");
+
+    let con = confirm(`do you want to delete ?`);
+    if (con == true) {
+      let afterDeleteData = delete_data.filter((data) => {
+        if (data.post_time != delete_index) {
+          return data;
+        }
+      });
       updateLsData("linkedIn", afterDeleteData);
       getAlldat();
     }
